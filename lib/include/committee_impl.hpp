@@ -59,7 +59,7 @@ void Committee<CryptoProtocol>::broadcastShares() {
     if (j != rank) {
       uint8_t msg_array[MAX_MESSAGE_LEN + 2];
       shares[real_j].SerializeToArray(msg_array + 2, MAX_MESSAGE_LEN);
-      node_.sendEncrypted(msg_array, shares[real_j].ByteSizeLong(), miner_j, committeeId_);
+      node_.sendEncrypted(msg_array, shares[real_j].ByteSize(), miner_j, committeeId_);
     }
     ++j;
   }
