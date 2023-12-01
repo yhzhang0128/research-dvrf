@@ -20,6 +20,14 @@
 #include "localnode.hpp"
 #include "simplenode.hpp"
 #include "networknode.hpp"
+#include <sys/time.h>
+
+typedef unsigned long long u64;
+u64 timeval_diff(struct timeval &tv1, struct timeval &tv2) {
+    u64 sec_diff = tv2.tv_sec - tv1.tv_sec;
+    u64 usec_diff = sec_diff * 1000000 + tv2.tv_usec - tv1.tv_usec;
+    return usec_diff;
+}
 
 using namespace fetch::consensus;
 
@@ -32,11 +40,15 @@ class DKGEventObserver : public EventObserver {
   std::unordered_set<std::string> signatures_computed_;
   uint32_t counter{1};
 public:
+  uint32_t threshold;
+  timeval tv_init, tv_share_finish, tv_combine_finish;
   explicit DKGEventObserver(uint32_t committee_size) : committee_size_{committee_size} {}
 
   void notifyNewConnection(const std::string &, const std::string &) override {}
 
-  void notifyCommitteeSync(const std::string &) override {}
+  void notifyCommitteeSync(const std::string &) override {
+      gettimeofday(&tv_share_finish, nullptr);
+  }
 
   void notifyRBCDeliver(const tag_type &, uint32_t, uint32_t) override {}
 
@@ -46,11 +58,18 @@ public:
                                 std::chrono::time_point<std::chrono::high_resolution_clock>) override {}
 
   void notifyGroupSignature(const std::string &, const std::string &signature) override {
+      //std::cout << "## calling notifyGroupSignature" << std::endl;
     std::unique_lock<std::mutex> mlock(m_group_sig_);
     if (signatures_computed_.find(signature) == signatures_computed_.end()) {
       fetch::consensus::SHA512 sigHash{signature};
+      gettimeofday(&tv_combine_finish, nullptr);
       std::cout << "Round: " << counter << ", Random Value: " << sigHash.toString() << std::endl;
-      std::cout << std::endl;
+
+      double share_total = (double)timeval_diff(tv_init, tv_share_finish) / 1000;
+      double share_single = share_total / (threshold - 1);
+      u64 combine = timeval_diff(tv_share_finish, tv_combine_finish);
+      std::cout << "## Share generation: " << share_single << "/" << share_total << "ms, Combine: " << combine << " us" << std::endl;
+
       signatures_computed_.insert(signature);
       ++counter;
     }

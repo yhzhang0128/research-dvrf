@@ -250,13 +250,20 @@ void Committee<CryptoProtocol>::receivedSignatureShares(const std::string &messa
   std::unique_lock<std::mutex> lock{mutex_};
   logger.trace("receivedSignatureShares node {} msg {} nb {} ", node_.id(), message,
                crypto_.numSignatureShares(message));
+
   if (crypto_.isFinished(message)) {
+    // Start to combine all the shares
+    node_.getEventObserver().notifyCommitteeSync(message);
     auto sig = crypto_.computeGroupSignature(message);
+
     assert(!sig.empty());
     fetch::consensus::SHA512 sigHash{sig};
     logger.info("Node {} round {} random value {}", idToIndex_[node_.id()], thresholdSigningComputed_, sigHash.toString());
     lock.unlock();
+
+    // Return and print the random number
     node_.getEventObserver().notifyGroupSignature(message, sig);
+
     if (thresholdSigningComputed_ < thresholdSigningEnabled_) {
       ++thresholdSigningComputed_;
       sendSignatureShare(sigHash.toString() + std::to_string(thresholdSigningComputed_));

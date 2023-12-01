@@ -25,7 +25,7 @@
 #include "glow_dvrf.hpp"
 #include "ddh_dvrf.hpp"
 #include "clara.hpp"
-
+#include <sys/time.h>
 using namespace fetch::consensus;
 
 int main(int argc, char *argv[]) {
@@ -34,10 +34,10 @@ int main(int argc, char *argv[]) {
   bool showHelp{false};
   double latency{0};
   bool networked{false};
-  uint32_t threads{8};
-  uint32_t nbNodes{10};
-  uint32_t threshold{6};
-  uint32_t nbRounds{4};
+  uint32_t threads{1};
+  uint32_t nbNodes{100};
+  uint32_t threshold{67};
+  uint32_t nbRounds{1};
   bool signMessages{false};
   uint32_t cryptoLib{4};
 
@@ -52,8 +52,11 @@ int main(int argc, char *argv[]) {
                 | clara::Opt(cryptoLib, "protocol")["--protocol"]["-p"](
           "1 = Dfinity-mcl, 2 = Dfinity-relic, 3 = DDH-libsodium, 4 = GLOW-mcl, 5 = GLOW-relic Default 4.");
 
+  struct timeval tv_start;
+  gettimeofday(&tv_start, nullptr);
+
   auto result = parser.parse(clara::Args(argc, argv));
-  if (showHelp || argc == 1) {
+  if (showHelp) {
     std::cout << parser << std::endl;
   } else {
     try {
@@ -81,6 +84,10 @@ int main(int argc, char *argv[]) {
         default:
           nodes = build<DfinityDvrf<CryptoMcl>>(networked, latency, obs, nbNodes, threshold, scheduler, signMessages);
       }
+
+      gettimeofday(&obs.tv_init, nullptr);
+      std::cout << "## Init takes " << (double)timeval_diff(tv_start, obs.tv_init) / 1000 << " ms for " << nbNodes << " nodes." << std::endl;
+      obs.threshold = threshold;
 
       // Enable threshold signing
       for (uint32_t iv = 0; iv < nbNodes; ++iv) {
