@@ -23,6 +23,8 @@
 #include "glow_dvrf.hpp"
 using namespace fetch::consensus;
 
+std::unordered_map<uint32_t, std::string> sigShares;
+
 int main(int argc, char *argv[]) {
   double latency{0};
   bool networked{false};

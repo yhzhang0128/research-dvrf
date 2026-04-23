@@ -23,6 +23,9 @@
 #include "glow_dvrf.hpp"
 using namespace fetch::consensus;
 
+#include "sha512.hpp"
+std::unordered_map<uint32_t, std::string> sigShares;
+
 int main(int argc, char *argv[]) {
   double latency{0};
   bool networked{false};
@@ -33,7 +36,7 @@ int main(int argc, char *argv[]) {
   bool signMessages{false};
   uint32_t cryptoLib{4};
 
-  struct timeval tv_start;
+  struct timeval tv_start, tv_end;
   gettimeofday(&tv_start, nullptr);
 
   try {
@@ -64,5 +67,29 @@ int main(int argc, char *argv[]) {
   } catch (std::exception &e) {
     std::cerr << "Exception: " << e.what() << "\n";
   }
+
+  using Signature = typename CryptoMcl::Signature;
+  std::unordered_map<uint32_t, Signature> shares;
+
+  assert(sigShares.size() == nbNodes);
+
+  // Randomly select threshold+1 shares
+  std::srand(std::time(0));
+  while (shares.size() != threshold + 1) {
+    uint32_t i = std::rand() % nbNodes;
+    Signature sig_i;
+    sig_i.assign(sigShares[i]);
+    shares[i] = sig_i;
+  }
+
+  // Combine the shares
+  gettimeofday(&tv_start, nullptr);
+  Signature combine{BaseDkg<CryptoMcl, typename CryptoMcl::GroupPublicKey>::lagrangeInterpolation(shares)};
+  fetch::consensus::SHA512 sigHash{combine.toString()};
+  gettimeofday(&tv_end, nullptr);
+
+  std::cout << "combine=" << combine << std::endl;
+  std::cout << "SHA512(combine)=" << sigHash.toString() << std::endl;
+  std::cout << "combine latency=" << (double)timeval_diff(tv_start, tv_end) << "us" << std::endl;
   return 0;
 }

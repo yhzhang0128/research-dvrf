@@ -21,6 +21,8 @@
 #include "committee_impl.hpp"
 #include "rbc.hpp"
 
+extern std::unordered_map<uint32_t, std::string> sigShares;
+
 namespace fetch {
 namespace consensus {
 
@@ -83,6 +85,8 @@ void CommitteeManager<CryptoProtocol>::sendSignatureShare() {
             << " pi1=|" << share.share_pi() << "|"
             << " pi2=|" << share.share_pi2() << "|"
             << " latency=" << (double)usec_diff << "us" << std::endl;
+
+  sigShares[idx] = share.share_sig();
 }
 
 template<class CryptoProtocol>
