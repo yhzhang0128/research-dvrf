@@ -56,7 +56,6 @@ int main(int argc, char *argv[]) {
 
     //SignaturesShare shares[nbNodes];
     for (uint32_t iv = 0; iv < nbNodes; ++iv) {
-      std::cout << "node#" << iv << std::endl;
       nodes[iv]->sendSignatureShare();
     }
 
