@@ -54,7 +54,6 @@ class Committee {
   const std::set<std::string> committee_; ///< Set of all member ids in DKG
   uint32_t polynomialDegree_; ///< Polynomial degree, which sets threshold for group signature
   uint8_t committeeId_; ///< Id for this committee
-  CryptoProtocol crypto_; ///< Crypto type
   AbstractDkgNode &node_; ///< Node for handling of messages
   RBC rbc_; ///< Reliable broadcast channel
   std::unordered_map<std::string, uint32_t> idToIndex_{}; ///< Map from member id to index in DKG
@@ -151,6 +150,7 @@ public:
 
   /// Threshold signing
   /// @{
+  CryptoProtocol crypto_; ///< Crypto type
   void enableThresholdSigning(uint32_t t);
   void sendSignatureShare(const std::string &message);
   /// @}

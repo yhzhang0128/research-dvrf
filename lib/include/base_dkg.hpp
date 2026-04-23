@@ -397,7 +397,10 @@ public:
     std::vector<PrivateKey> vec_a;
     vec_a.resize(threshold);
     for (uint32_t ii = 0; ii < threshold; ++ii) {
-      vec_a[ii].random();
+      //vec_a[ii].random();
+      vec_a[ii].setZero();
+      for (uint32_t jj=0; jj<=ii; jj++)
+        vec_a[ii].increment();
     }
 
     std::vector<VerificationKey> publicKeyShares(committeeSize);

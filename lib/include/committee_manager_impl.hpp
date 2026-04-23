@@ -54,7 +54,21 @@ template<class CryptoProtocol>
 void CommitteeManager<CryptoProtocol>::sendSignatureShare() {
   assert(committee_);
   // Default value for starting the threshold signing is the group pubic key || r = 1
-  committee_->sendSignatureShare("initial_seed_" + committee_->groupPublicKey() + std::to_string(1));
+  //committee_->sendSignatureShare("initial_seed_" + committee_->groupPublicKey() + std::to_string(1));
+  std::string seed1 = "initial_seed_1 5173578892599734067234149424591595782986365419449292579295047516321835847172 15119497474085580044320336663262461243998458633131248128160712142294409743247 2697847626174343260362452542524433391484223002884879657310180516391653671508 23515398862504126071071906958470979199305624479535762533704701767614862069111";
+  std::string seed2 = "initial_seed_2 5173578892599734067234149424591595782986365419449292579295047516321835847172 15119497474085580044320336663262461243998458633131248128160712142294409743247 2697847626174343260362452542524433391484223002884879657310180516391653671508 23515398862504126071071906958470979199305624479535762533704701767614862069111";
+
+  uint32_t idx = idToIndex_[node_.id()];
+  auto sig_msg = committee_->crypto_.getSignatureShare(seed2, idx);
+  auto share = sig_msg.msg_;
+  // if (committee_->crypto_.addSignatureShare(share, idx)) {
+  //   std::cout << "Share#" << idx << " verify SUCCESS" << std::endl;
+  // } else {
+  //   std::cout << "Share#" << idx << " verify FAIL" << std::endl;
+  // }
+  std::cout << "Idx=" << idx
+            << ", num_share=" << committee_->crypto_.numSignatureShares(share.message())
+            << ", share=" << share.share_sig() << std::endl;
 }
 
 template<class CryptoProtocol>

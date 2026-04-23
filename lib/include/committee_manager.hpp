@@ -37,9 +37,7 @@ class CommitteeManager {
   uint8_t preDkgChannelId_ = 10;
   uint32_t threshold_;
   AbstractDkgNode &node_;
-  std::unique_ptr<CommitteeCrypto> committee_;
   std::unique_ptr<RBC> rbc_;
-  std::unordered_map<std::string, uint32_t> idToIndex_;
   std::unordered_set<std::string> joined_;
   bool committeeSent_{false};
   std::mutex mutex_;
@@ -50,6 +48,8 @@ class CommitteeManager {
   void receivedCommittee(std::unique_lock<std::mutex> lock);
 
 public:
+  std::unique_ptr<CommitteeCrypto> committee_;
+  std::unordered_map<std::string, uint32_t> idToIndex_;
   CommitteeManager(const std::set<std::string> &committee, AbstractDkgNode &node, uint32_t threshold,
                    uint8_t committeeId = 0);
 

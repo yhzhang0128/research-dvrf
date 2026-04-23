@@ -27,8 +27,8 @@
 
 class SignaturesShare {
 private:
-  fetch::consensus::pb::Gossip_SignatureShare msg_;
 public:
+  fetch::consensus::pb::Gossip_SignatureShare msg_;
   SignaturesShare(const std::string &message, const std::string &share) {
     msg_.set_share_sig(share);
     msg_.set_message(message);
