@@ -11,7 +11,7 @@ set (APP_MODULE_PATH "${PROJECT_SOURCE_DIR}/apps/network")
 set (APP_SRC_PATH  "${APP_MODULE_PATH}/src" )
 
 #set target executable
-add_executable (${APP_NAME} "${APP_SRC_PATH}/main.cpp")
+#add_executable (${APP_NAME} "${APP_SRC_PATH}/main.cpp")
 
 #set includes
 target_include_directories (${APP_NAME} PRIVATE ${THIRD_PARTY_INCLUDE_PATH})

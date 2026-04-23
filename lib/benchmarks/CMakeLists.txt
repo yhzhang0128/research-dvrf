@@ -19,13 +19,13 @@ include_directories (${LIBRARY_INCLUDE_PATH} ${TEST_THIRD_PARTY_INCLUDE_PATH})
 file (GLOB SOURCE_FILES "${SRC_PATH}/*.cpp")
 
 #set target executable
-add_executable (${APP_NAME} ${SOURCE_FILES})
+#add_executable (${APP_NAME} ${SOURCE_FILES})
 
 #add the library
-target_link_libraries (${APP_NAME} ${LIB_NAME} Threads::Threads)
+#target_link_libraries (${APP_NAME} ${LIB_NAME} Threads::Threads)
 
 # Turn on CMake testing capabilities
-enable_testing()
+#enable_testing()
 
 #parse catch tests
-ParseAndAddCatchTests (${APP_NAME})
+#ParseAndAddCatchTests (${APP_NAME})

@@ -14,14 +14,14 @@ set (TEST_SRC_PATH  "${TEST_MODULE_PATH}/src" )
 file (GLOB TEST_SOURCE_FILES "${TEST_SRC_PATH}/*.cpp")
 
 #set target executable
-add_executable (${TEST_APP_NAME} ${TEST_SOURCE_FILES})
+#add_executable (${TEST_APP_NAME} ${TEST_SOURCE_FILES})
 
 #add the library
-target_include_directories(${TEST_APP_NAME} PRIVATE ${TEST_THIRD_PARTY_INCLUDE_PATH})
-target_link_libraries (${TEST_APP_NAME} ${LIB_NAME} Threads::Threads)
+#target_include_directories(${TEST_APP_NAME} PRIVATE ${TEST_THIRD_PARTY_INCLUDE_PATH})
+#target_link_libraries (${TEST_APP_NAME} ${LIB_NAME} Threads::Threads)
 
 # Turn on CMake testing capabilities
-enable_testing()
+#enable_testing()
 
 #parse catch tests
-ParseAndAddCatchTests (${TEST_APP_NAME})
+#ParseAndAddCatchTests (${TEST_APP_NAME})

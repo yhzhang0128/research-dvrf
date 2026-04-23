@@ -5,7 +5,7 @@ set (APP_NAME "Server")
 set (APP_MODULE_PATH "${PROJECT_SOURCE_DIR}/apps/client_server/server")
 
 #set target executable
-add_executable (${APP_NAME} "${APP_MODULE_PATH}/main.cpp")
+#add_executable (${APP_NAME} "${APP_MODULE_PATH}/main.cpp")
 
 #set includes
 target_include_directories (${APP_NAME} PRIVATE ${THIRD_PARTY_INCLUDE_PATH})
