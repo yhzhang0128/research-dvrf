@@ -21,6 +21,7 @@
 #include "committee_impl.hpp"
 #include "rbc.hpp"
 
+extern std::vector<unsigned long long> genLatencies;
 extern std::unordered_map<uint32_t, std::string> sigShares;
 
 namespace fetch {
@@ -77,15 +78,15 @@ void CommitteeManager<CryptoProtocol>::sendSignatureShare() {
   //   std::cout << "Share#" << idx << " verify FAIL" << std::endl;
   // }
 
-  typedef unsigned long long u64;
-  u64 sec_diff = tv_end.tv_sec - tv_start.tv_sec;
-  u64 usec_diff = sec_diff * 1000000 + tv_end.tv_usec - tv_start.tv_usec;
+  unsigned long long sec_diff = tv_end.tv_sec - tv_start.tv_sec;
+  unsigned long long usec_diff = sec_diff * 1000000 + tv_end.tv_usec - tv_start.tv_usec;
   std::cout << "idx=" << idx
             << " share=|" << share.share_sig() << "|"
             << " pi1=|" << share.share_pi() << "|"
             << " pi2=|" << share.share_pi2() << "|"
             << " latency=" << (double)usec_diff << "us" << std::endl;
 
+  genLatencies.push_back(usec_diff);
   sigShares[idx] = share.share_sig();
 }
 

@@ -23,6 +23,7 @@
 #include "glow_dvrf.hpp"
 using namespace fetch::consensus;
 
+std::vector<unsigned long long> genLatencies;
 std::unordered_map<uint32_t, std::string> sigShares;
 
 int main(int argc, char *argv[]) {

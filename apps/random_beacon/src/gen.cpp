@@ -24,6 +24,7 @@
 using namespace fetch::consensus;
 
 #include "sha512.hpp"
+std::vector<unsigned long long> genLatencies;
 std::unordered_map<uint32_t, std::string> sigShares;
 
 int main(int argc, char *argv[]) {
@@ -88,8 +89,17 @@ int main(int argc, char *argv[]) {
   fetch::consensus::SHA512 sigHash{combine.toString()};
   gettimeofday(&tv_end, nullptr);
 
+  // Calculate the average share generation latency
+  unsigned long long avg = 0;
+  for (auto &i : genLatencies) {
+      avg += i;
+  }
+  avg /= genLatencies.size();
+
   std::cout << "combine=" << combine << std::endl;
   std::cout << "SHA512(combine)=" << sigHash.toString() << std::endl;
-  std::cout << "combine latency=" << (double)timeval_diff(tv_start, tv_end) << "us" << std::endl;
+  std::cout << "==========================" << std::endl;
+  std::cout << "share generate latency (avg) = " << avg << "us" <<  std::endl;
+  std::cout << "share combine latency        = " << (double)timeval_diff(tv_start, tv_end) << "us" << std::endl;
   return 0;
 }
